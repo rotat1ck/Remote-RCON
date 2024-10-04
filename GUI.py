@@ -26,12 +26,16 @@ def check():
     
 
 with dpg.window(tag="Auth"):
-    dpg.add_text("Input password")
-    inputlogin = dpg.add_input_text(label="login", hint="Enter login", callback=handlelogin)
-    inputpass = dpg.add_input_text(label="password", hint="Enter password", callback=handlepass)
-    check_button = dpg.add_button(label="Log in", callback=check)
+    dpg.set_global_font_scale(2)
+    dpg.add_text("Remote RCON", indent=205)
 
-dpg.create_viewport(title='Auth', width=600, height=200)
+    inputlogin = dpg.add_input_text(hint="Enter login", callback=handlelogin, indent=160, width = 250)
+
+    inputpass = dpg.add_input_text(hint="Enter password", callback=handlepass, indent=160, width =250)
+
+    check_button = dpg.add_button(label="Log in", callback=check, indent=235, height=35)
+
+dpg.create_viewport(title='Auth', width=600, height=300)
 dpg.setup_dearpygui()
 dpg.show_viewport()
 dpg.set_primary_window("Auth", True)
