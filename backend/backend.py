@@ -6,7 +6,10 @@ def checkhash():
 
     data = response.json()
     status = data.get("success")
+    userid = data.get("id")
+    oplevel = data.get("level")
     accesscode = data.get("code")
-    print(status, accesscode)
+    expiredate = data.get("expiredate")
+    print(status, userid, oplevel, accesscode, expiredate)
 
 checkhash()
