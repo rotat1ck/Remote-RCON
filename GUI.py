@@ -29,7 +29,6 @@ def sendHash(hash_value):
 
     data = hash_value
 
-    # Create a socket (SOCK_STREAM means a TCP socket)
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     try:

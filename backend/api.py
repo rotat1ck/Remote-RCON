@@ -100,12 +100,11 @@ async def fetch_data(request: Request):
         oplvl = results[0][1]
         
         # получение кода и времени окончания действия
-        selectAccessCreds(hash_value=hash_value)
-        
+        results = selectAccessCreds(hash_value=hash_value)
         timenow = time.time()
         
         # если кода нет в базе(первый вход)
-        if results == None:
+        if results[0][0] == None:
             # создание нового кода и времени его действия
             insertAccessCode(hash_value=hash_value, timenow=timenow, code=generateAccessCode())
             
@@ -134,27 +133,53 @@ async def fetch_data(request: Request):
             code = results[0][1]
             
         # отправка результата
-        return JSONResponse(content={"success": 'true', "id": userid, "level": oplvl, "code": code, "expiredate": timestamp}, status_code=200)
+        return JSONResponse(content={"success": 'true', "id": userid, "oplvl": oplvl, "code": code, "expiredate": timestamp}, status_code=200)
     
 @app.post("/main")
 async def handleCommands(request: Request):
     data = await request.json()
     
-    # получение хэша от бэкэнда
-    hash_value = data.get("hash")
+    # получение ключа от бэкэнда
     code_value = data.get("code")
     
     # проверка кода доступа пользователя
     conn = connectToDatabase()
-    query = f"SELECT expires, rights FROM credits WHERE hash='{hash_value}'"
+    query = f"SELECT expires, rights, id FROM credits WHERE accesscode='{code_value}'"
     results = executeQuery(conn, query)
     closeDatabaseConnection(conn)
     
-    # если хэш не верен
-    if results == []:
+    expireDate = results[0][0]
+    oplvl = results[0][1]
+    userid = results[0][2]
+    
+    # если код не верен
+    if results[0][1] == None:
         return JSONResponse(content={"success": 'false'}, status_code=403)
     else:
-        pass
+        if code_value != expireDate:
+            timenow = time.time()
+            
+            # если код устарел 
+            if (timenow - results[0][0]) > 3600:
+                # создание нового кода и времени его действия
+                code = generateAccessCode()
+                conn = connectToDatabase()
+                query = f"UPDATE credits SET accesscode = '{code}', expires = '{timenow}' WHERE accesscode = '{code_value}'"
+                newresults = executeQuery(conn, query)
+                closeDatabaseConnection(conn)
+                # получение нового ключа
+                conn = connectToDatabase()
+                query = f"SELECT accesscode FROM credits WHERE id='{userid}'"
+                results = executeQuery(conn, query)
+                code_value = results[0][0]
+                closeDatabaseConnection(conn)
+
+
+                # отправка в RCON
+                return JSONResponse(content={"success": 'true', 'id': userid, 'accesscode': code_value, 'oplvl': oplvl}, status_code=200)
+        else:
+            # отправка в RCON
+            return JSONResponse(content={"success": 'true', 'id': userid, 'accesscode': code_value, 'oplvl': oplvl}, status_code=200)
         
 @app.post("/ban")
 async def handleBan(request: Request):
