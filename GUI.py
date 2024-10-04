@@ -31,7 +31,7 @@ with dpg.window(tag="Auth"):
 
     inputlogin = dpg.add_input_text(hint="Enter login", callback=handlelogin, indent=160, width = 250)
 
-    inputpass = dpg.add_input_text(hint="Enter password", callback=handlepass, indent=160, width =250)
+    inputpass = dpg.add_input_text(hint="Enter password", callback=handlepass, indent=160, width = 250, password=True)
 
     check_button = dpg.add_button(label="Log in", callback=check, indent=235, height=35)
 
