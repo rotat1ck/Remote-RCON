@@ -132,6 +132,30 @@ async def fetch_data(request: Request):
             
             timestamp = results[0][0]
             code = results[0][1]
-        
+            
         # отправка результата
         return JSONResponse(content={"success": 'true', "id": userid, "level": oplvl, "code": code, "expiredate": timestamp}, status_code=200)
+    
+@app.post("/main")
+async def handleCommands(request: Request):
+    data = await request.json()
+    
+    # получение хэша от бэкэнда
+    hash_value = data.get("hash")
+    code_value = data.get("code")
+    
+    # проверка кода доступа пользователя
+    conn = connectToDatabase()
+    query = f"SELECT expires, rights FROM credits WHERE hash='{hash_value}'"
+    results = executeQuery(conn, query)
+    closeDatabaseConnection(conn)
+    
+    # если хэш не верен
+    if results == []:
+        return JSONResponse(content={"success": 'false'}, status_code=403)
+    else:
+        pass
+        
+@app.post("/ban")
+async def handleBan(request: Request):
+    pass
