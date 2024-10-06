@@ -2,4 +2,5 @@
 .venv/
 *.exe
 *.db
-.__pycache__/
+__pycache__/
+*.sqbpro
