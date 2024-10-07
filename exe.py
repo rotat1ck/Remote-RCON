@@ -6,6 +6,8 @@ import dearpygui.dearpygui as dpg
 import hashlib
 import socket
 
+v = 1.0
+
 def auth():
     commands_history = []
     HOST, PORT = "77.37.246.6", 7777
@@ -211,5 +213,7 @@ def login_callback():
     dpg.set_global_font_scale(1)
     
 
-
-auth()
+try:
+    auth()
+except TimeoutError:
+    exit

@@ -1,7 +1,8 @@
 from rcon.source import Client
+import os
 
-oplvl2 = ['list', 'kick', 'dox']
-oplvl3 = ['list', 'kick', 'ban', 'dox', 'light', 'start']
+oplvl2 = ['list', 'kick', 'dox', 'pardon']
+oplvl3 = ['list', 'kick', 'ban', 'dox', 'light', 'start', 'pardon']
 
 
 def check(command, oplvl):
@@ -27,12 +28,21 @@ def main(command):
     elif 'light' in command:
         return light_player(command)
     elif 'start' in command:
-        pass
+        return start_server()
     else:
         return execute_command(command)
     
 
-
+def start_server():
+    try:
+        with Client('77.37.246.6', 2589, passwd='zalupa1488') as client:
+            response = client.run('list')
+        if response:
+            return 'Server already running'
+    except TimeoutError:
+        os.chdir("C:/server")
+        os.startfile("run.bat")
+        return 'Starting server'
 
 def get_list_of_players():
     with Client('77.37.246.6', 2589, passwd='zalupa1488') as client:

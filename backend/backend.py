@@ -3,6 +3,11 @@ import socket
 import json
 import threading
 
+v = 1.0 
+
+class TimeoutException(Exception):
+    pass
+
 def checkhash(hash_value, conn, addr):
     data = {"hash": hash_value}
     response = requests.post("http://localhost:8000/checkhash", json=data)
@@ -33,7 +38,10 @@ def handleCommand(conn, command, accesscode):
             code = data.get("accesscode")
             # выполнение rcon команды
             import rconexec
-            dataToSend = rconexec.check(command, oplvl)
+            try:
+                dataToSend = rconexec.check(command, oplvl)
+            except TimeoutError:
+                dataToSend = 'Server is down. Use /start'
             print(f"Пользователь {userid} | Выполнил команду {command}")
             conn.sendall(f"{dataToSend}".encode())
         except json.JSONDecodeError:
@@ -52,13 +60,15 @@ def client_handler(conn, addr):
             hash_value = data.decode()
             if hash_value == 'keepalive':
                 continue
-            elif hash_value[0] != '/':
+            elif hash_value[0] != '/' and len(hash_value) == 64:
                 checkhash(hash_value, conn, addr)
             else:
                 command = hash_value[1:]
                 data = conn.recv(1024)
                 accesscode = data.decode()
                 handleCommand(conn, command, accesscode)
+    except ConnectionResetError:
+        pass
     finally:
         print(f"Connection with {addr} closed.")
 
