@@ -1,6 +1,8 @@
 .vscode/
 .venv/
+output
 *.exe
 *.db
-__pycache__/
+__pycache__
 *.sqbpro
+rconexec.py

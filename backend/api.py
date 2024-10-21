@@ -175,8 +175,6 @@ async def handleCommands(request: Request):
             code_value = results[0][0]
             closeDatabaseConnection(conn)
             
-            # отправка в RCON
-            return JSONResponse(content={"success": 'true', 'id': userid, 'accesscode': code_value, 'oplvl': oplvl}, status_code=200)
         # отправка в RCON
         return JSONResponse(content={"success": 'true', 'id': userid, 'accesscode': code_value, 'oplvl': oplvl}, status_code=200)
         
