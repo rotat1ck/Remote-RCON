@@ -12,18 +12,17 @@ def auth():
     commands_history = []
     HOST, PORT = "77.37.246.6", 7777
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sock.connect((HOST, PORT))  # Connect once
+    sock.connect((HOST, PORT))
 
     def keep_alive():
         while True:
             try:
                 sock.sendall(bytes('keepalive', encoding="utf-8"))
-                time.sleep(60)  # Wait for 60 seconds before sending the next keep-alive
+                time.sleep(60)
             except Exception as e:
                 print(f"Keep-alive error: {e}")
                 break
 
-    # Start the keep-alive thread
     threading.Thread(target=keep_alive, daemon=True).start()
 
     def get_data(command, accesscode):
@@ -146,7 +145,7 @@ def auth():
         try:
             sock.sendall(bytes(data, encoding="utf-8"))
             global accesscode
-            received = sock.recv(1024)
+            received = sock.recv(10240)
             received = received.decode("utf-8")
             if received != 'Access denied':
                 accesscode = received
@@ -199,16 +198,11 @@ def auth():
     dpg.start_dearpygui()
 
 def login_callback():
-    # Hide the authentication window
     dpg.hide_item("Auth")
-    # Show the RemoteRCON window
     dpg.show_item("RemoteRCONWindow")
-    # Change the viewport title to reflect the new window
     dpg.set_viewport_title("RemoteRCON")
-    # Resize the viewport if needed
     dpg.set_viewport_width(640)
     dpg.set_viewport_height(390)
-    # Set the RemoteRCON window as the primary window
     dpg.set_primary_window("RemoteRCONWindow", True)
     dpg.set_global_font_scale(1)
     

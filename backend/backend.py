@@ -54,7 +54,7 @@ def client_handler(conn, addr):
     print(f"Connected by {addr}")
     try:
         while True:
-            data = conn.recv(1024)
+            data = conn.recv(10240)
             if not data:
                 break
             hash_value = data.decode()
