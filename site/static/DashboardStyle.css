@@ -1,3 +1,6 @@
+*{
+    font-family: 'Inter';
+}
 html, body {
     width: 600px;
     height: 400px;
@@ -5,58 +8,51 @@ html, body {
     padding: 0;
     overflow: hidden;
     font-family: monospace;
-    background-color: #1e1e1e;
-    color: #00ff00;
+    background-color: #1e1e1e65;
+    color: #f7f8f7;
 }
+
 body {
+    background-image: url(background.png);
+    background-position: center;
+    background-size: cover;
     display: flex;
     flex-direction: column;
 }
-.welcome-header h2 {
-    transform: translate(46vh,0vh);
-} 
-.player-list h3 {   
-    transform: translate(0vh,-2vh);
-}
-.welcome-header button {
-    width: auto;
-    border: none;
-    transition: 0.3s;
-    height: 3vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-.welcome-header button:hover {
-    background-color: aqua;
-}
-#logout-btn {
-    transform: translate(30vh,0vh);
-}
-.welcome-header {   
-    transform: translate(-20vh,0vh);
-    width: 80%;
-    background-color: #1e1e1e;
+
+.welcome-header {
+    background-color: #000000a1;
     color: #00ff00;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding: 10px;
 }
+
 .welcome-header h2 {
+    color: white;
     margin: 0;
     font-size: 1rem;
 }
+
+.command-buttons {
+    display: flex;
+    gap: 10px;
+}
+
 .logout-btn {
-    background-color: #1e1e1e;
-    color: #00ff00;
-    border: 1px solid #00ff00;
+    background-color: rgba(0, 0, 0, 0);
+    border: none;
+    color: #ffffff;
     padding: 8px 15px;
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
+
 .logout-btn:hover {
-    background-color: #00ff00;
-    color: #1e1e1e;
+    box-shadow: 1px 1px 10px 10px rgba(167, 56, 231, 0.2);
+    background-color: plum;
+    color: #ffffff;
 }
 
 .dashboard-container {
@@ -65,119 +61,225 @@ body {
     justify-content: center;
     padding: 10px;
     overflow: hidden;
-}
-.sidebar {
-    width: 150px;
-    border-right: 1px solid #00ff00;
-    padding: 10px;
-    margin-right: 20px;
+    position: relative; /* Для использования абсолютного позиционирования */
 }
 
 .main-content {
     width: 100%;
     max-width: 100%;
     display: flex;
+    position: relative; /* Устанавливаем для абсолютного позиционирования дочерних элементов */
 }
+
 .terminal-section {
     flex: 3;
     display: flex;
     flex-direction: column;
-    margin-right: 10px;
+    position: relative; /* Для абсолютного позиционирования списка игроков */
 }
-.versionAndname {
-    border: 2px solid red;
-    width: 20%;
-    height: 0%;
-    background-color: rgba(0, 0, 0, 0);
-    display: flex;
-    justify-content: end;
-    align-items: end;
-    flex-direction: column;
-    transform: translate(-1vh,1vh);
-}
-#version {
-    transform: translate(0vh,2vh);
-}
-.player-list {
-    border: 2px solid;
-    height: 25.9vh;
-    width: 120px;
-    border-left: 1px solid #00ff00;
-    padding: 10px;
-    overflow-y: auto;
-}
+
 .terminal-output {
+    width: 72%;
     flex: 1;
-    border: 2px solid #00ff00;
-    background-color: black;
+    border: 2px solid plum;
+    background-color: #1e1e1e65;
     padding: 10px;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
     max-height: 400px;
 }
+
 .input-area {
+    width: 76%;
     display: flex;
     margin-top: 10px;
-    background-color: #1e1e1e;
-    padding: 10px;
+    background-color: #1e1e1e00;
 }
+
 .input-area input {
     flex: 1;
-    background-color: #1e1e1e;
-    color: #00ff00;
-    border: 1px solid #00ff00;
+    background-color: #1e1e1e65;
+    color: #fdfdfd;
+    border: 2px solid plum;
     padding: 10px;
 }
+
+
 .input-area button {
-    background-color: #1e1e1e;
-    color: #00ff00;
-    border: 1px solid #00ff00;
+    cursor: pointer;
+    background-color: #1e1e1e65;
+    color: #ffffff;
+    border: 2px solid plum;
     padding: 10px;
     margin-left: 10px;
+    transition: 0.3s;
+}
+.input-area button:hover {
+    box-shadow: 1px 1px 10px 10px rgba(167, 56, 231, 0.2);
+    background-color: plum;
+    color: #ffffff;
+}
+.player-list {
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 276px;
+    width: 130px;
+    border: 2px solid plum;
+    padding: 10px;
+    overflow-y: auto;
+    background-color: #1e1e1e65;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.player-list h3 {
+    transform: translate(0px,-15px);
+    margin-bottom: 0px;
 }
 .player-button {
-    background-color: #1e1e1e;
-    color: #00ff00;
-    border: 1px solid #00ff00;
+    background-color: #1e1e1e65;
+    color: #ffffff;
+    border: 2px solid plum;
     display: block;
     width: 100%;
     margin: 5px 0;
     text-align: left;
     padding: 5px;
+}
+
+.player-list button {
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.player-list button:hover {
+    box-shadow: 1px 1px 10px 10px rgba(167, 56, 231, 0.2);
+    background-color: plum;
+    color: #ffffff;
+}
+
+#player-list-container {
+    flex: 1;
+    overflow-y: auto;
+}
+.player-footer {
+    position: absolute;
+    bottom: -9px;
+    right: 3px;
+    color: #ffffff;
+    font-size: 0.8rem;
+    line-height: 0.5em;
 }
 .error-output {
     color: red;
     font-weight: bold;
 }
+
+/* Стили для командных кнопок и выпадающих меню */
 .command-btn {
-    background-color: #1e1e1e;
-    color: #00ff00;
-    border: 1px solid #00ff00;
-    display: block;
-    width: 100%;
-    margin: 5px 0;
-    padding: 5px;
-    text-align: left;
-}
-.command-btn:hover, .player-button:hover {
-    background-color: #00ff00;
-    color: #1e1e1e;
-}
-.version {
-    display: flex;
-    align-items: end;
-    justify-content: end;
-    flex-direction: column;
-    width: 120px; 
-    height: 4vh; 
     background-color: #1e1e1e00;
-    margin-top: 10px; 
-    position: absolute;
-    z-index: 10;
-    transform: translate(48vh,34vh);
+    color: #ffffff;
+    border: none;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
-.version p {
-    padding: 0;
-    margin: 0;
+
+.command-btn:hover {
+    box-shadow: 1px 1px 10px 10px rgba(167, 56, 231, 0.2);
+    background-color: plum;
+    color: #ffffff;
+}
+
+.dropdown {
+    position: relative;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #000000c4;
+    border: 2px solid plum;
+    top: 100%;
+    left: 0;
+    min-width: 120px;
+    z-index: 1;
+    padding: 5px;
+}
+
+.dropdown-content button {
+    background-color: #1e1e1e00;
+    color: #fdfffd;
+    border: none;
+    padding: 8px 12px;
+    text-align: left;
+    width: 100%;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.dropdown-content button:hover {
+    box-shadow: 1px 1px 10px 10px rgba(167, 56, 231, 0.2);
+    background-color: plum;
+    color: #ffffff;
+}
+
+/* Показываем выпадающее меню при добавлении класса show */
+.dropdown-content.show {
+    display: block;
+}
+
+.command-buttons {
+    display: flex; /* Align buttons in a row */
+    position: relative; /* Positioning context for absolute elements */
+}
+
+.command-buttons {
+    position: relative; /* Establish a positioning context */
+}
+
+.player-buttons {
+    
+    display: flex; /* Use flexbox for layout */
+    flex-direction: column; /* Stack buttons vertically */
+    margin-left: 10px; /* Space between dropdown and buttons */
+    transform: translate(-75px, 32px);
+    position: absolute; /* Position it absolutely */
+    top: 0; /* Align to the top of the parent */
+    left: 100%; /* Position to the right of the parent */
+    z-index: 1; /* Ensure it appears above other content */
+    background-color: #000000c4; /* Match background with other elements */
+    border: 2px solid plum; /* Optional border */
+    padding: 5px; /* Optional padding */
+    display: none; /* Initially hidden */
+}
+
+#troll-buttons-container {
+    background-color: #000000e6;
+    transform: translate(-79px, 33px);
+}
+
+#players-buttons-container {
+    background-color: #000000e6;
+    transform: translate(-19px, 33px);
+}
+
+.player-buttons button{
+    background-color: #000000e6;
+    border: none;
+    color: white;
+    cursor: pointer;
+    transition: 0.3s;
+}
+.player-buttons button:hover {
+    box-shadow: 1px 1px 10px 10px rgba(167, 56, 231, 0.2);
+    background-color: plum;
+    color: #ffffff;
+}
+#version_1 {
+    margin-left: 47%;
+
 }

@@ -3,17 +3,67 @@
 <head>
     <meta charset="UTF-8">
     <title>Dashboard</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='DashboardStyle.css') }}">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Noto+Sans+JP:wght@100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='dashboardstyle.css') }}">
+    
 </head>
 <body>
     <div class="welcome-header">
+        <div class="command-buttons">
+            <div class="dropdown">
+                <button class="command-btn" id="toggle-troll-dropdown">Troll</button>
+                <div class="dropdown-content" id="troll-dropdown">
+
+                    <button id="toggle-dox-dropdown">Dox Player</button>
+                    <div id="dox-dropdown" style="display: none;">
+                    </div>
+                
+                    <button id="toggle-light-dropdown">Light Player</button>
+                    <div id="light-dropdown" style="display: none;">
+
+                    </div>
+                
+                    <button id="toggle-kill-dropdown">Kill Player</button>
+                    <div id="kill-dropdown" style="display: none;">
+
+                    </div>
+                </div>
+            </div>
+            <!-- Button for PLAYER commands -->
+            <div class="dropdown">
+                <button class="command-btn" id="toggle-players-dropdown">Players</button>
+                <div class="dropdown-content" id="players-dropdown">
+
+                    <button id="toggle-ban-dropdown">Ban Player</button>
+                    <div id="ban-dropdown" style="display: none;">
+
+                    </div>
+                
+                    <button id="toggle-kick-dropdown">Kick Player</button>
+                    <div id="kick-dropdown" style="display: none;">
+
+                    </div>
+                </div>
+            </div> 
+            <!-- Button for SERVER commands -->
+            <div class="dropdown">
+                <button class="command-btn" id="toggle-server-dropdown">Server</button>
+                <div class="dropdown-content" id="server-dropdown">
+                    <button id="start-server">Start Server</button>
+                    <button id="stop-server">Stop Server</button>
+                </div>
+            </div>
+            <div id="troll-buttons-container" class="player-buttons" style="display: none;">
+                <div id="dox-player-buttons" class="player-buttons" id="troll-dropdown" style="display: none;"></div>
+                <div id="light-player-buttons" class="player-buttons" id="troll-dropdown" style="display: none;"></div>
+                <div id="kill-player-buttons" class="player-buttons" id="troll-dropdown" style="display: none;"></div>
+            </div>
+
+            <div id="players-buttons-container" class="player-buttons" style="display: none;">
+                <div id="ban-player-buttons" class="player-buttons" id="players-dropdown" style="display: none;"></div>
+                <div id="kick-player-buttons" class="player-buttons" id="players-dropdown" style="display: none;"></div>
+            </div>
+        </div>
         <h2>Welcome, <span id="username-display">{{ username }}</span>!</h2>
-        <button class="command-btn" data-command="ls">Troll</button>
-            <button class="command-btn" data-command="pwd">Players</button>
-            <button class="command-btn" data-command="whoami">Server</button>
         <button id="logout-btn" class="logout-btn">Logout</button>
     </div>
     <div class="dashboard-container">
@@ -22,18 +72,19 @@
                 <div id="terminal-output" class="terminal-output"></div>
                 <div class="input-area">
                     <input type="text" id="command-input" placeholder="Enter command...">
-                    <button id="run-btn">Run</button> 
+                    <button id="run-btn">Run</button>
+                </div>
+                <!-- Перемещаем сюда элемент списка игроков -->
+                <div class="player-list">
+                    <h3 id="player-count">Players: 0/0</h3>
+                    <div id="player-list-container"></div>
+                </div>
+                <div class="player-footer">
+                    <p id="version_1">v. 2.0</p>
+                    <p>by rotatick</p>
                 </div>
             </div>
-            <div class="player-list">
-                <h3 id="player-count">Players: 0/0</h3>
-                <div id="player-list-container"></div>
-            </div>
         </div>
-    </div>
-    <div class="version">
-        <p>v. 2.0</p>
-        <p>by rotatick</p>
     </div>
     <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
