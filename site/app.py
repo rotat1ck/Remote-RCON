@@ -1,17 +1,8 @@
 from flask import Flask, render_template, request, jsonify, session, redirect, url_for
-import random
-import string
+import random, string, requests, json
+
 
 app = Flask(__name__)
-app.secret_key = 'rcon9883_secret_session_key'  # For session management
-
-# Dummy credentials (replace with proper authentication)
-VALID_CREDENTIALS = {
-    'admin': 'password123'
-}
-
-# In-memory storage for access codes (for demonstration purposes)
-access_codes = {}
 
 def generate_access_code(length=16):
     """Generate a random access code."""
@@ -27,103 +18,114 @@ def login():
         # Check if it's a JSON request (from AJAX)
         if request.is_json:
             data = request.json
+            print(data)
+            hash_value = data.get('hash')
             username = data.get('username')
-            password = data.get('password')
-        else:
-            # Handle traditional form submission
-            username = request.form.get('username')
-            password = request.form.get('password')
 
-        if username in VALID_CREDENTIALS and VALID_CREDENTIALS[username] == password:
-            # Create a new access code for the user
-            access_code = generate_access_code()
-            access_codes[access_code] = username  # Store the access code with the associated username
-            
-            # For AJAX request, return JSON
+    data = {"hash": hash_value}
+    response = requests.post("http://localhost:8000/checkhash", json=data)
+
+    if response.status_code == 200:
+        try:
+            data = response.json()
+            userid = data.get("id")
+            oplvl = data.get("oplvl")
+            accesscode = data.get("code")
+            print(f"Подключился пользователь: {userid} \nУровень доступа: {oplvl}\nКод: {accesscode}")
             if request.is_json:
                 return jsonify({
-                    'access_code': access_code,
-                    'username': username  # Include username in the response
+                    'access_code': accesscode,
+                    'username': username 
                 })
             
-            # For traditional form submission, redirect
             return redirect(url_for('dashboard'))
-        
+        except json.JSONDecodeError:
+            print("Invalid JSON response:", response.text)
+    else:
+        print("Error:", response.status_code)
         # For traditional form submission, you might want to add error handling
         return render_template('login.html', error='Invalid credentials')
+            
 
 @app.route('/dashboard', methods=['GET'])
 def dashboard():
-    username = access_codes.get(request.cookies.get('access_code'), 'User')
-    return render_template('dashboard.html', username=username)
+    return render_template('dashboard.html')
 
 @app.route('/execute', methods=['POST'])
 def execute_command():
-    data = request.json
-    access_code = data.get('access_code')
-    command = data.get('command', '')
+    jsondata = request.json
+    accesscode = jsondata.get('access_code')
+    command = jsondata.get('command', '')
 
-    # Validate the access code
-    username = access_codes.get(access_code)
-    if not username:
-        return jsonify({'msg': 'Invalid access code'}), 401
-
-    try:
-        # Be very careful with command execution
-        print(f'Executing command: {command} for user: {username}')
-        return jsonify({'output': f'Executed command: {command}'})
-    except Exception as e:
-        return jsonify({'output': str(e)})
+    data = {"code": accesscode}
+    response = requests.post("http://localhost:8000/main", json=data)
+    if response.status_code == 200:
+        try:
+            data = response.json()
+            userid = data.get("id")
+            oplvl = data.get("oplvl")
+            code = data.get("accesscode")
+            # выполнение rcon команды
+            import rconexec
+            try:
+                dataToSend = rconexec.check(command, oplvl)
+            except TimeoutError:
+                dataToSend = 'Server is down. Use /start'
+            print(f"Пользователь {userid} | Выполнил команду {command}")
+            return jsonify({'output': f'{dataToSend}'})
+        except json.JSONDecodeError:
+            print("Invalid JSON response:", response.text)
+    else:
+        print("Error:", response.status_code)
+    
     
 @app.route('/get_players', methods=['POST'])
 def get_players():
-    access_code = request.json.get('access_code')
+    accesscode = request.json.get('access_code')
+    data = {"code": accesscode}
+    response = requests.post("http://localhost:8000/main", json=data)
     
-    # Validate access code (similar to execute route)
-    username = access_codes.get(access_code)
-    if not username:
-        return jsonify({'msg': 'Invalid access code'}), 401
+    if response.status_code == 200:
+        
 
-    try:
-        # Simulate getting player list (replace with actual RCON command)
-        # This is a mock response - replace with actual RCON command execution
-        from rconexec import get_list_of_players
         try:
-            players_response = get_list_of_players()
-        except TimeoutError:
-            return jsonify({'output': 'Server is down. Use /start'})
-        
-        if ':' in players_response:
-            prefix, player_names = players_response.split(':')
-            player_names = player_names.strip()
-            player_names = player_names.split(', ')
+            # Simulate getting player list (replace with actual RCON command)
+            # This is a mock response - replace with actual RCON command execution
+            from rconexec import get_list_of_players
+            try:
+                players_response = get_list_of_players()
+            except TimeoutError:
+                return jsonify({'output': 'Server is down. Use /start'})
             
-            # Extract player count
-            words = prefix.split()
-            numbers = [word for word in words if word.isdigit()]
+            if ':' in players_response:
+                prefix, player_names = players_response.split(':')
+                player_names = player_names.strip()
+                player_names = player_names.split(', ')
+                
+                # Extract player count
+                words = prefix.split()
+                numbers = [word for word in words if word.isdigit()]
+                
+                return jsonify({
+                    'total_players': numbers[0],
+                    'max_players': numbers[1],
+                    'players': player_names
+                })
             
-            return jsonify({
-                'total_players': numbers[0],
-                'max_players': numbers[1],
-                'players': player_names
-            })
+            return jsonify({'players': []})
         
-        return jsonify({'players': []})
-    
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        except Exception as e:
+            return jsonify({'error': str(e)}), 500
     
 @app.route('/logout', methods=['POST'])
 def logout():
     # Clear the access code
-    access_code = request.json.get('access_code')
-    if access_code in access_codes:
-        del access_codes[access_code]
+    
     return jsonify({'success': True})
 
 if __name__ == '__main__':
     app.run(
-        host='0.0.0.0',  # Listen on all available network interfaces
+        host='localhost',  # Listen on all available network interfaces
         port=7777,       # Choose your desired port
         debug=True       # Set to False in production
     )

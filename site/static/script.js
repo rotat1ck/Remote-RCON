@@ -11,6 +11,23 @@ document.addEventListener('DOMContentLoaded', () => {
     let accessCode = localStorage.getItem('access_code') || '';
     let players = []; // Array to hold player names
 
+    async function createHash(login, password) {
+        // Combine login and password
+        const combinedData = login + password;
+    
+        // Encode the combined data into a Uint8Array
+        const encoder = new TextEncoder();
+        const data = encoder.encode(combinedData);
+    
+        // Hash the combined data using SHA-256
+        const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    
+        // Send the hash to the server
+        return hashHex;
+    }
+
     // Login functionality
     const loginForm = document.getElementById('login-form');
     if (loginForm) {
@@ -19,18 +36,21 @@ document.addEventListener('DOMContentLoaded', () => {
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
 
+            const hashed = await createHash(username, password);
+            console.log(hashed);
+
             try {
                 const response = await fetch('/login', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ username, password })
+                    body: JSON.stringify({ hash: hashed, username: username })
                 });
 
                 const result = await response.json();
                 if (result.access_code) {
                     accessCode = result.access_code;
                     localStorage.setItem('access_code', accessCode);
-                    localStorage.setItem('username', result.username);
+                    localStorage.setItem('username', username);
                     window.location.href = '/dashboard';
                 } else {
                     alert('Login failed');
@@ -39,6 +59,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.error('Login error:', error);
             }
         });
+    }
+
+    // Retrieve username from local storage
+    const username = localStorage.getItem('username') || 'Guest'; // Default to 'Guest' if not found
+    const usernameDisplay = document.getElementById('username-display');
+    if (usernameDisplay) {
+        usernameDisplay.textContent = username; // Set the username in the welcome message
     }
 
     // Define the addToTerminal function
