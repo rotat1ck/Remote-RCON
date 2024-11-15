@@ -6,3 +6,5 @@ output
 __pycache__
 *.sqbpro
 rconexec.py
+dist/
+node_modules/

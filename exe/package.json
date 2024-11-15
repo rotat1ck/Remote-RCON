@@ -1,0 +1,29 @@
+{
+  "name": "remote-rcon-2.0",
+  "version": "2.0.0",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder --win --x64 ",
+    "rebuild": "electron-rebuild",
+    "postinstall": "electron-builder install-app-deps"
+  },
+  "build": {
+    "compression": "maximum",
+    "files": [
+      "main.js",
+      "node_modules/**/*"
+    ],
+    "extraFiles": [],
+    "extraResources": [],
+    "asar": true
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "Remote RCON 2.0",
+  "devDependencies": {
+    "electron": "^33.2.0",
+    "electron-builder": "^23.6.0"
+  }
+}

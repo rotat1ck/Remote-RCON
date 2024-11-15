@@ -1,0 +1,33 @@
+*
+
+!main.js
+!node_modules/
+
+main.js
+node_modules/
+
+# Ignore build artifacts
+dist/
+build/
+*.exe
+*.zip
+
+# Ignore source maps
+*.map
+
+# Ignore configuration files
+*.log
+*.env
+*.local
+
+# Ignore development files
+tests/
+spec/
+coverage/
+*.md
+.vscode/
+.idea/
+*.iml
+
+# Ignore documentation
+docs/

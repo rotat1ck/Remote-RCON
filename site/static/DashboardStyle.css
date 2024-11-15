@@ -267,12 +267,12 @@ body {
 
 #troll-buttons-container {
     background-color: #000000e6;
-    transform: translate(-57px, 32px);
+    transform: translate(-78px, 32px);
 }
 
 #players-buttons-container {
     background-color: #000000e6;
-    transform: translate(-7px, 32px);
+    transform: translate(-17px, 32px);
 }
 
 .player-buttons button{
