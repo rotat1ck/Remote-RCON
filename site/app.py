@@ -41,7 +41,8 @@ def login():
     else:
         print("Error:", response.status_code)
         # For traditional form submission, you might want to add error handling
-        return render_template('login.html', error='Invalid credentials')
+        return jsonify({"success": False}), 403
+
             
 
 @app.route('/dashboard', methods=['GET'])
@@ -83,11 +84,8 @@ def get_players():
     response = requests.post("http://localhost:8000/main", json=data)
     
     if response.status_code == 200:
-        
-
         try:
             # Simulate getting player list (replace with actual RCON command)
-            # This is a mock response - replace with actual RCON command execution
             from rconexec import get_list_of_players
             try:
                 players_response = get_list_of_players()
@@ -114,6 +112,10 @@ def get_players():
         except Exception as e:
             return jsonify({'error': str(e)}), 500
     
+    # Handle non-200 response
+    return jsonify({'error': 'Failed to fetch players, status code: {}'.format(response.status_code)}), response.status_code
+
+
 @app.route('/logout', methods=['POST'])
 def logout():
     # Clear the access code
@@ -122,7 +124,7 @@ def logout():
 
 if __name__ == '__main__':
     app.run(
-        host='localhost',  # Listen on all available network interfaces
+        host='0.0.0.0',  # Listen on all available network interfaces
         port=7777,       # Choose your desired port
         debug=True       # Set to False in production
     )

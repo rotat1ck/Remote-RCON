@@ -1,3 +1,4 @@
+
 *{
     font-family: 'Inter';
 }
@@ -69,6 +70,7 @@ body {
     max-width: 600px;
     display: flex;
     position: relative; /* Устанавливаем для абсолютного позиционирования дочерних элементов */
+    overflow: hidden;
 }
 
 .terminal-section {
@@ -76,6 +78,7 @@ body {
     display: flex;
     flex-direction: column;
     position: relative; /* Для абсолютного позиционирования списка игроков */
+    overflow: hidden;
 }
 
 .terminal-output {
@@ -88,6 +91,9 @@ body {
     display: flex;
     flex-direction: column;
     max-height: 400px;
+    word-wrap: break-word; /* Allow long words to break */
+    overflow-wrap: break-word; /* Better support for breaking */
+    white-space: normal; /* Ensure normal whitespace handling */
 }
 
 .input-area {
@@ -103,6 +109,7 @@ body {
     color: #fdfdfd;
     border: 2px solid plum;
     padding: 10px;
+    outline: none;
 }
 
 
@@ -167,6 +174,7 @@ body {
 }
 .player-footer {
     position: absolute;
+    transform: translate(-4px, -5px);
     bottom: -9px;
     right: 3px;
     color: #ffffff;
@@ -259,12 +267,12 @@ body {
 
 #troll-buttons-container {
     background-color: #000000e6;
-    transform: translate(-79px, 33px);
+    transform: translate(-57px, 32px);
 }
 
 #players-buttons-container {
     background-color: #000000e6;
-    transform: translate(-19px, 33px);
+    transform: translate(-7px, 32px);
 }
 
 .player-buttons button{

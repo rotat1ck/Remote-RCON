@@ -11,21 +11,8 @@ document.addEventListener('DOMContentLoaded', () => {
     let accessCode = localStorage.getItem('access_code') || '';
     let players = []; // Array to hold player names
 
-    async function createHash(login, password) {
-        // Combine login and password
-        const combinedData = login + password;
-    
-        // Encode the combined data into a Uint8Array
-        const encoder = new TextEncoder();
-        const data = encoder.encode(combinedData);
-    
-        // Hash the combined data using SHA-256
-        const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-        const hashArray = Array.from(new Uint8Array(hashBuffer));
-        const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-    
-        // Send the hash to the server
-        return hashHex;
+    function createHash(data) {
+        return CryptoJS.SHA256(data).toString(CryptoJS.enc.Hex);
     }
 
     // Login functionality
@@ -49,6 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const result = await response.json();
                 if (result.access_code) {
                     accessCode = result.access_code;
+                    console.log(accessCode);
                     localStorage.setItem('access_code', accessCode);
                     localStorage.setItem('username', username);
                     window.location.href = '/dashboard';

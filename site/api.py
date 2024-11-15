@@ -147,37 +147,42 @@ async def handleCommands(request: Request):
     query = f"SELECT expires, rights, id FROM credits WHERE accesscode='{code_value}'"
     results = executeQuery(conn, query)
     closeDatabaseConnection(conn)
+    try:
+        expireDate = results[0][0]
+        oplvl = results[0][1]
+        userid = results[0][2]
+        print(userid, oplvl, expireDate)
     
-    expireDate = results[0][0]
-    oplvl = results[0][1]
-    userid = results[0][2]
-    print(userid, oplvl, expireDate)
+
+
     
-    # если код не верен
-    if results[0][1] == None:
+        # если код не верен
+        if results[0][1] == None:
+            return JSONResponse(content={"success": 'false'}, status_code=403)
+        else:
+            timenow = time.time()
+                
+            # если код устарел 
+            if (timenow - results[0][0]) > 3600:
+                # создание нового кода и времени его действия
+                code = generateAccessCode()
+                conn = connectToDatabase()
+                query = f"UPDATE credits SET accesscode = '{code}', expires = '{timenow}' WHERE accesscode = '{code_value}'"
+                newresults = executeQuery(conn, query)
+                closeDatabaseConnection(conn)
+                
+                # получение нового ключа
+                conn = connectToDatabase()
+                query = f"SELECT accesscode FROM credits WHERE id='{userid}'"
+                results = executeQuery(conn, query)
+                code_value = results[0][0]
+                closeDatabaseConnection(conn)
+                
+            # отправка в RCON
+            return JSONResponse(content={"success": 'true', 'id': userid, 'accesscode': code_value, 'oplvl': oplvl}, status_code=200)
+    except IndexError as e:
+        print(e)
         return JSONResponse(content={"success": 'false'}, status_code=403)
-    else:
-        timenow = time.time()
-            
-        # если код устарел 
-        if (timenow - results[0][0]) > 3600:
-            # создание нового кода и времени его действия
-            code = generateAccessCode()
-            conn = connectToDatabase()
-            query = f"UPDATE credits SET accesscode = '{code}', expires = '{timenow}' WHERE accesscode = '{code_value}'"
-            newresults = executeQuery(conn, query)
-            closeDatabaseConnection(conn)
-            
-            # получение нового ключа
-            conn = connectToDatabase()
-            query = f"SELECT accesscode FROM credits WHERE id='{userid}'"
-            results = executeQuery(conn, query)
-            code_value = results[0][0]
-            closeDatabaseConnection(conn)
-            
-        # отправка в RCON
-        return JSONResponse(content={"success": 'true', 'id': userid, 'accesscode': code_value, 'oplvl': oplvl}, status_code=200)
-        
 @app.post("/ban")
 async def handleBan(request: Request):
     pass
