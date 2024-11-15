@@ -4,9 +4,6 @@ import random, string, requests, json
 
 app = Flask(__name__)
 
-def generate_access_code(length=16):
-    """Generate a random access code."""
-    return ''.join(random.choices(string.ascii_letters + string.digits, k=length))
 
 @app.route('/', methods=['GET'])
 def login_page():
