@@ -11,6 +11,35 @@ document.addEventListener('DOMContentLoaded', () => {
     let accessCode = localStorage.getItem('access_code') || '';
     let players = []; // Array to hold player names
 
+    let isStartButtonDisabled = false; // Flag to track if the start button is disabled
+    let isStopButtonDisabled = false; // Flag to track if the stop button is disabled
+
+    // Function to disable the start button
+    function disableStartButton() {
+        isStartButtonDisabled = true;
+        startButton.disabled = true;
+
+        // Re-enable the start button after 5 minutes
+        setTimeout(() => {
+            isStartButtonDisabled = false;
+            startButton.disabled = false;
+        }, 300000); // 5 minutes in milliseconds
+    }
+
+    // Function to disable the stop button
+    function disableStopButton() {
+        isStopButtonDisabled = true;
+        stopButton.disabled = true;
+
+        // Re-enable the stop button after 5 minutes
+        setTimeout(() => {
+            isStopButtonDisabled = false;
+            stopButton.disabled = false;
+        }, 300000); // 5 minutes in milliseconds
+    }
+
+    
+
     function createHash(data) {
         return CryptoJS.SHA256(data).toString(CryptoJS.enc.Hex);
     }
@@ -22,8 +51,9 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
-
-            const hashed = await createHash(username, password);
+            
+            const toHash = username + password
+            const hashed = await createHash(toHash);
             console.log(hashed);
 
             try {
@@ -388,13 +418,21 @@ document.addEventListener('DOMContentLoaded', () => {
             actionButtonsContainer.appendChild(kickButton);
         });
     });
-    
 
     startButton.addEventListener('click', async () => {
-        executeCommand(`/start`);
+        if (!isStartButtonDisabled) {
+            await executeCommand(`/start`);
+            disableStartButton(); // Disable start button after click
+            addToTerminal('Cooldown 5 min...', isError = true)
+        }
     });
+
     stopButton.addEventListener('click', async () => {
-        executeCommand(`/stop`);
+        if (!isStopButtonDisabled) {
+            await executeCommand(`/stop`);
+            disableStopButton(); // Disable stop button after click
+            addToTerminal('Cooldown 5 min...', isError = true)
+        }
     });
     
     // Logout functionality

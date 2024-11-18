@@ -71,6 +71,7 @@ button {
     color: #ffffff;
     padding: 8px; /* Reduced padding */
     margin-left: 10px;
+    transform: translate(0px, 10px);
     transition: all 0.3s ease;
     cursor: pointer;
 }
@@ -96,4 +97,23 @@ button:hover {
     color: #1e1e1e;
     cursor: pointer;
     box-shadow: 0 0 10px #00ff00;
+}
+
+#toggle-password {
+    transform: translate(333px, -19.5px);
+    padding: 4px;
+}
+
+#username {
+    transform: translate(0px, 10px);
+}
+
+#password {
+    transform: translate(0px, 10px);
+}
+.eye-icon {
+    border: none;
+    background: none;
+    cursor: pointer;
+    color: #999;
 }
