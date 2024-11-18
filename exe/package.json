@@ -1,6 +1,6 @@
 {
-  "name": "remote-rcon-2.0",
-  "version": "2.0.0",
+  "name": "remote-rcon",
+  "version": "2.1.0",
   "main": "main.js",
   "scripts": {
     "start": "electron .",

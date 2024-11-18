@@ -6,6 +6,7 @@ function createWindow() {
         width: 766,
         height: 539,
         title: 'Remote RCON 2.0',
+        resizable: false,
         webPreferences: {
             nodeIntegration: true, // Enable Node.js integration
             contextIsolation: false // Disable context isolation
